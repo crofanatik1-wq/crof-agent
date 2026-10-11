@@ -1,9 +1,9 @@
 import { eveChannel } from "eve/channels/eve";
 import { localDev, type AuthFn, vercelOidc } from "eve/channels/auth";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 
 const betterAuthSession: AuthFn<Request> = async (request) => {
-  const session = await auth.api.getSession({ headers: request.headers });
+  const session = await getAuth().api.getSession({ headers: request.headers });
   if (!session) return null;
 
   const attributes: Record<string, string> = {
