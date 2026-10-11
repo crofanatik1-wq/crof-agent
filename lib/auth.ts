@@ -25,7 +25,8 @@ function requireEnvironmentVariable(name: string): string {
   throw new Error(`Missing required environment variable: ${name}`);
 }
 
-export const auth = betterAuth({
+function createAuth() {
+  return betterAuth({
   baseURL: {
     allowedHosts: getAllowedHosts(),
     protocol: process.env.NODE_ENV === "development" ? "auto" : "https",
@@ -47,4 +48,13 @@ export const auth = betterAuth({
       clientSecret: requireEnvironmentVariable("VERCEL_APP_CLIENT_SECRET"),
     },
   },
-});
+  });
+}
+
+let authInstance: ReturnType<typeof createAuth> | undefined;
+
+// Deferred so build-time page data collection doesn't require runtime-only env vars.
+export function getAuth() {
+  authInstance ??= createAuth();
+  return authInstance;
+}

@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
 import { AgentChat } from "./agent-chat";
 import { AccountControl, SignIn } from "./web-chat-auth";
 
@@ -14,7 +14,8 @@ export async function AuthenticatedAgentChat({
     return <AgentChat sessionId={sessionId} sessionless={sessionless} />;
   }
 
-  const session = await auth.api.getSession({ headers: await headers() });
+  const requestHeaders = await headers();
+  const session = await getAuth().api.getSession({ headers: requestHeaders });
   if (!session) return <SignIn />;
 
   return (
